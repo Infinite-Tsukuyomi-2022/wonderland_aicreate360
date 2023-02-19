@@ -4,7 +4,7 @@ require('hardhat-deploy');
 require("hardhat-gas-reporter");
 require("dotenv").config();
 require("@nomiclabs/hardhat-etherscan");
-require('solidity-coverage')
+require('solidity-coverage');
 
 
 // This is a sample Hardhat task. To learn how to create your own go to
@@ -37,20 +37,20 @@ module.exports = {
   networks:{
     hardhat: {
       accounts:{
-        "mnemonic": "say exile slice scout liar decrease clump humor stick donkey rabbit shallow"
+        "mnemonic": process.env.HARDHAT_TEST_MNEMONIC
       }
     },
-    goerli: {
-      url: process.env.ALCHEMY_API_GOERLI_URL,
+    mumbai: {
+      url: process.env.ALCHEMY_API_MUMBAI_URL,
       accounts:{
-        "mnemonic": process.env.GOERLI_TEST_MNEMONIC
+        "mnemonic": process.env.MUMBAI_TEST_MNEMONIC
       }
     },
-    mainnet: {
+    polygon: {
       url: process.env.ALCHEMY_API_MAINNET_KEY, 
       accounts:[process.env.MAINNET_PRIVATE_KEY],
-      gas: 5786271,
-      gasPrice: 43000000000
+      gas: 3009400,
+      gasPrice: 120000000000
     }
   },  
   etherscan: {

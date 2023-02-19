@@ -34,7 +34,7 @@ async function main() {
 	// Signature
 	for (let i = 0; i < addressForClaim.length; i++) {
 		const domain = {
-			name: 'SETTVDAO',
+			name: 'wonderland.aicreate360',
 			version: '1.0.0',
 			chainId: 1,
 			verifyingContract: nftAddress

@@ -12,8 +12,8 @@ async function main() {
 	let quantity = [1];
 	let userAddress = ['0x8C300Fb9BefEcaAcFb161167D417190a097d9f56'];
 
-	const OOPSContract = await ethers.getContractFactory("SETTVDAO");
-	const contract = await OOPSContract.attach(nftAddress);
+	const SETTVContract = await ethers.getContractFactory("wonderland_aicreate360");
+	const contract = await SETTVContract.attach(nftAddress);
 
 	console.log("Airdrop " + userAddress.length + " NFTs.")
 	

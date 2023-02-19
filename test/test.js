@@ -14,7 +14,7 @@ const {
 	ethers
 } = require('hardhat');
 
-describe("SETTVDAO", function () {
+describe("Contract Construct", function () {
 
 	let Token;
 	let contract;
@@ -25,16 +25,19 @@ describe("SETTVDAO", function () {
 
 	before(async function () {
 
-		Token = await ethers.getContractFactory("SETTVDAO");
+		Token = await ethers.getContractFactory("wonderland_aicreate360");
 		[owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 
 		contract = await Token.deploy();
-		console.log("SETTVDAO deployed to:", contract.address);
-		console.log("Owner:", owner.address)
+		console.log("wonderland_aicreate360 deployed to:", contract.address);
+		console.log("Owner:", owner.address);
+		console.log("addr1:", addr1.address);
+		console.log("addr2:", addr2.address);
+		// console.log("addrs:", addrs);
 
 	});
 
-	describe("SETTVDAO Test", function () {
+	describe("Contract Test", function () {
 
 		it("airdrop Function", async function () {
 
@@ -56,13 +59,13 @@ describe("SETTVDAO", function () {
 			await contract.connect(owner).setSwitch(1, 1647198840, 1, 1647198840, 1);
 		});
 
-		// it("setSigner Function", async function () {
-		// 	await contract.connect(owner).setSigner(addr1.address);
-		// });
-
-		it("setPrice Function", async function () {
-			await contract.connect(owner).set_PRICE("40000000000000000");
+		it("setSigner Function", async function () {
+			await contract.connect(owner).setSigner(owner.address);
 		});
+
+		// it("setPrice Function", async function () {
+		// 	await contract.connect(owner).set_PRICE("40000000000000000");
+		// });
 
 		it("mintWhitelist Function", async function () {
 
@@ -70,10 +73,11 @@ describe("SETTVDAO", function () {
 			let maxQuantity = 1;
 
 			const domain = {
-				name: 'SETTVDAO',
+				name: 'wonderland_aicreate360',
 				version: '1.0.0',
 				chainId: 31337,
-				verifyingContract: '0x8cADCa5B79C6cfe2555707EaE764FC2f0156C611'
+				// verifyingContract: '0x8cADCa5B79C6cfe2555707EaE764FC2f0156C611'
+				verifyingContract: '0x03BDD595639Fb287622Fc1A0baced3f3E1186ACE'
 			};
 
 			const types = {
@@ -94,21 +98,21 @@ describe("SETTVDAO", function () {
 			};
 
 			signature = await owner._signTypedData(domain, types, value);
-
-			await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature, {value: "50000000000000000"});
+			console.log(signature);
+			await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature/*, {value: "50000000000000000"}*/);
 
 			expect(await contract.totalSupply()).to.equal(317);
 
 		});
 
 		it("mintNFT Function", async function () {
-			await contract.connect(addr2).mintNFT(2, {value: "100000000000000000"});
-			expect(await contract.totalSupply()).to.equal(319);
+			await contract.connect(addr2).mintNFT(1/*, {value: "100000000000000000"}*/);
+			expect(await contract.totalSupply()).to.equal(318);
 		});
 
 		it("burn Function", async function () {
 			await contract.connect(addr1).burn(addr1.address, 51);
-			expect(await contract.totalSupply()).to.equal(318);
+			expect(await contract.totalSupply()).to.equal(317);
 		});
 
 		it("setURI Function", async function () {
@@ -117,9 +121,9 @@ describe("SETTVDAO", function () {
 
 		});
 
-		it("withdrawAll Function", async function () {
-			await contract.connect(owner).setTreasury("0x5279246E3626Cebe71a4c181382A50a71d2A4156");
-			await contract.connect(owner).withdrawAll();
-		});
+		// it("withdrawAll Function", async function () {
+		// 	await contract.connect(owner).setTreasury("0x5279246E3626Cebe71a4c181382A50a71d2A4156");
+		// 	await contract.connect(owner).withdrawAll();
+		// });
 	});
 });

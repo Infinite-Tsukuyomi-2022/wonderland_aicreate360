@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat");
 
-const NFT = artifacts.require("SETTVDAO");
+const NFT = artifacts.require("wonderland_aicreate360");
 
 module.exports = async ({
   getNamedAccounts,
@@ -14,14 +14,14 @@ module.exports = async ({
   console.log("");
   console.log("Deployer: ", deployer.address);
 
-  nft = await deploy('SETTVDAO', {
-    contract: "SETTVDAO",
+  nft = await deploy('wonderland_aicreate360', {
+    contract: "wonderland_aicreate360",
     from: deployer.address,
     args: [
     ],
   });
 
-  console.log("SETTVDAO address: ", nft.address);
+  console.log("wonderland_aicreate360 address: ", nft.address);
 };
 
-module.exports.tags = ['SETTVDAO'];
+module.exports.tags = ['wonderland_aicreate360'];

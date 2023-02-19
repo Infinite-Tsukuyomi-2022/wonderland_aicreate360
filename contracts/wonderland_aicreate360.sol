@@ -8,32 +8,34 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-// ███████╗███████╗████████╗████████╗██╗   ██╗██████╗  █████╗  ██████╗
-// ██╔════╝██╔════╝╚══██╔══╝╚══██╔══╝██║   ██║██╔══██╗██╔══██╗██╔═══██╗
-// ███████╗█████╗     ██║      ██║   ██║   ██║██║  ██║███████║██║   ██║
-// ╚════██║██╔══╝     ██║      ██║   ╚██╗ ██╔╝██║  ██║██╔══██║██║   ██║
-// ███████║███████╗   ██║      ██║    ╚████╔╝ ██████╔╝██║  ██║╚██████╔╝
-// ╚══════╝╚══════╝   ╚═╝      ╚═╝     ╚═══╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝
 
-contract SETTVDAO is Ownable, EIP712, ERC721A {
+//  ██╗    ██╗ ██████╗ ███╗   ██╗██████╗ ███████╗██████╗ ██╗      █████╗ ███╗   ██╗██████╗ 
+//  ██║    ██║██╔═══██╗████╗  ██║██╔══██╗██╔════╝██╔══██╗██║     ██╔══██╗████╗  ██║██╔══██╗
+//  ██║ █╗ ██║██║   ██║██╔██╗ ██║██║  ██║█████╗  ██████╔╝██║     ███████║██╔██╗ ██║██║  ██║
+//  ██║███╗██║██║   ██║██║╚██╗██║██║  ██║██╔══╝  ██╔══██╗██║     ██╔══██║██║╚██╗██║██║  ██║
+//  ╚███╔███╔╝╚██████╔╝██║ ╚████║██████╔╝███████╗██║  ██║███████╗██║  ██║██║ ╚████║██████╔╝
+//   ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝                                                                
+
+
+contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
     using SafeMath for uint256;
     using Strings for uint256;
 
     // Sales variables
     // ------------------------------------------------------------------------
-    uint256 public MAX_NFT = 999;
-    uint256 public WL_STAGE_LIMIT = 399; // 83 Whitelist
-    uint256 public PS_STAGE_LIMIT = 999; // 600 Public Sale
-    uint256 public MAX_PS_ADDRESS_TOKEN = 2;
-    uint256 public PRICE = 0.05 ether;
+    uint256 public MAX_NFT = 2999;
+    uint256 public WL_STAGE_LIMIT = 657; // 300 + 358, Whitelist + fans airdrop
+    uint256 public PS_STAGE_LIMIT = 2999; // 600 Public Sale
+    uint256 public MAX_PS_ADDRESS_TOKEN = 1;
+    // uint256 public PRICE = 0.0 ether;
     uint256 public whitelistSaleTimestamp = 1647198840;
     uint256 public publicSaleTimestamp = 1647198840;
     bool public hasWhitelistSaleStarted = false;
     bool public hasPublicSaleStarted = false;
     bool public hasBurnStarted = false;
-    string private _baseTokenURI = "http://api.liondaonft.com/Metadata/"; //
-    address public treasury = 0x5279246E3626Cebe71a4c181382A50a71d2A4156;
-    address public signer = 0x5279246E3626Cebe71a4c181382A50a71d2A4156;
+    string private _baseTokenURI = "http://wonderland.aicreate360.com/Metadata/";
+    address public treasury = 0x711A9ba89A8dA7c84f4805B989F67af038e023a6;
+    address public signer = 0x711A9ba89A8dA7c84f4805B989F67af038e023a6;
 
     mapping(address => uint256) public hasPSMinted;
     mapping(address => uint256) public hasWLMinted;
@@ -45,8 +47,8 @@ contract SETTVDAO is Ownable, EIP712, ERC721A {
     // Constructor
     // ------------------------------------------------------------------------
     constructor() 
-	EIP712("SETTVDAO", "1.0.0") 
-	ERC721A("SETTVDAO", "SET") {
+	EIP712("wonderland.aicreate360", "1.0.0") 
+	ERC721A("wonderland.aicreate360", "Wonderland") {
         _safeMint(treasury, 50);
     }
 
@@ -104,11 +106,11 @@ contract SETTVDAO is Ownable, EIP712, ERC721A {
 
     // Whitelist functions
     // ------------------------------------------------------------------------
-    function mintWhitelist(uint256 quantity, uint256 maxQuantity, bytes memory SIGNATURE) external payable onlyWhitelistSale {
+    function mintWhitelist(uint256 quantity, uint256 maxQuantity, bytes memory SIGNATURE) external /*payable*/ onlyWhitelistSale {
         require(totalSupply().add(quantity) <= WL_STAGE_LIMIT, "WL_STAGE_SOLD_OUT");
         require(verify(maxQuantity, SIGNATURE), "NOT_ELIGIBLE_FOT_WHITELIST");
         require(quantity > 0 && hasWLMinted[msg.sender].add(quantity) <= maxQuantity, "EXCEEDS_MAX_WL_QUANTITY");
-        require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
+        // require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
 
         hasWLMinted[msg.sender] = hasWLMinted[msg.sender].add(quantity);
         _safeMint(msg.sender, quantity);
@@ -118,10 +120,10 @@ contract SETTVDAO is Ownable, EIP712, ERC721A {
 
     // Public Sale functions
     // ------------------------------------------------------------------------
-    function mintNFT(uint256 quantity) external payable callerIsUser {
+    function mintNFT(uint256 quantity) external /*payable*/ callerIsUser {
         require(hasPublicSaleStarted == true, "SALE_NOT_ACTIVE");
         require(block.timestamp >= publicSaleTimestamp, "NOT_IN_SALE_TIME");
-        require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
+        // require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
         require(totalSupply().add(quantity) <= PS_STAGE_LIMIT, "PS_STAGE_SOLD_OUT");
         require(totalSupply().add(quantity) <= MAX_NFT, "EXCEEDS_MAX_NFT");
         require(quantity > 0 && hasPSMinted[msg.sender].add(quantity) <= MAX_PS_ADDRESS_TOKEN, "EXCEEDS_MAX_PS_QUANTITY");
@@ -168,9 +170,9 @@ contract SETTVDAO is Ownable, EIP712, ERC721A {
         MAX_PS_ADDRESS_TOKEN = _MAX_PS_ADDRESS_TOKEN;
     }
 
-    function set_PRICE(uint256 _price) public onlyOwner {
-        PRICE = _price;
-    }
+    // function set_PRICE(uint256 _price) public onlyOwner {
+    //     PRICE = _price;
+    // }
 
     function setSwitch(
         bool _hasWhitelistSaleStarted,
@@ -198,7 +200,7 @@ contract SETTVDAO is Ownable, EIP712, ERC721A {
         treasury = _treasury;
     }
 
-    function withdrawAll() public payable onlyOwner {
-        require(payable(treasury).send(address(this).balance));
-    }
+    // function withdrawAll() public payable onlyOwner {
+    //     require(payable(treasury).send(address(this).balance));
+    // }
 }
