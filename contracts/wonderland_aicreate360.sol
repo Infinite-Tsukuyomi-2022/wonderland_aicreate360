@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.17;
 
 import "./ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -18,7 +18,7 @@ import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 //   ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝                                                                
 
 
-contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
+contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilterer{
     using SafeMath for uint256;
     using Strings for uint256;
 
@@ -28,8 +28,9 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
     uint256 public PS_STAGE_LIMIT = 500;
     uint256 public MAX_PS_ADDRESS_TOKEN = 1;
     uint256 public airdropQuantity = 0;
-    uint256 public whitelistSaleTimestamp = 1647198840;
-    uint256 public publicSaleTimestamp = 1647198840; //1680148800
+    uint256 public soldQuantity = 0;
+    uint256 public whitelistSaleTimestamp = 1677142500;
+    uint256 public publicSaleTimestamp = 1677142500; //1680148800
     bool public hasWhitelistSaleStarted = false;
     bool public hasPublicSaleStarted = false;
     bool public hasBurnStarted = false;
@@ -81,7 +82,7 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
             SIGNATURE
         );
 
-        return signer == recoveredAddr || owner() == recoveredAddr;
+        return ((signer == recoveredAddr)||(owner() == recoveredAddr));
     }
 
     // Airdrop functions

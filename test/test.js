@@ -14,7 +14,7 @@ const {
 	ethers
 } = require('hardhat');
 
-describe("Contract Construct", function () {
+describe("Wonderland", function () {
 
 	let Token;
 	let contract;
@@ -41,13 +41,13 @@ describe("Contract Construct", function () {
 
 		it("airdrop Function", async function () {
 
-			await contract.connect(owner).airdrop([addr1.address, addr2.address], [66, 200]);
-			expect(await contract.totalSupply()).to.equal(316);
+			await contract.connect(owner).airdrop([addr1.address, addr2.address], [100, 200]);
+			expect(await contract.totalSupply()).to.equal(300);
 		});
 
 		it("transfer Function", async function () {
 
-			await contract.connect(owner).transferFrom(owner.address, addr2.address, 49);
+			await contract.connect(addr1).transferFrom(addr1.address, addr2.address, 50);
 		});
 
 		// it("soulBound Function", async function () {
@@ -56,7 +56,7 @@ describe("Contract Construct", function () {
 		// });
 
 		it("setSwitch Function", async function () {
-			await contract.connect(owner).setSwitch(1, 1647198840, 1, 1647198840, 1);
+			await contract.connect(owner).setSwitch(1, 1677142500, 1, 1677142500, 1);
 		});
 
 		it("setSigner Function", async function () {
@@ -76,7 +76,6 @@ describe("Contract Construct", function () {
 				name: 'wonderland_aicreate360',
 				version: '1.0.0',
 				chainId: 31337,
-				// verifyingContract: '0x8cADCa5B79C6cfe2555707EaE764FC2f0156C611'
 				verifyingContract: '0x03BDD595639Fb287622Fc1A0baced3f3E1186ACE'
 			};
 
@@ -98,21 +97,21 @@ describe("Contract Construct", function () {
 			};
 
 			signature = await owner._signTypedData(domain, types, value);
-			console.log(signature);
-			await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature/*, {value: "50000000000000000"}*/);
+			console.log('signature: '+signature);
+			await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature);
 
-			expect(await contract.totalSupply()).to.equal(317);
+			expect(await contract.totalSupply()).to.equal(301);
 
 		});
 
 		it("mintNFT Function", async function () {
-			await contract.connect(addr2).mintNFT(1/*, {value: "100000000000000000"}*/);
-			expect(await contract.totalSupply()).to.equal(318);
+			await contract.connect(addr2).mintNFT(1);
+			expect(await contract.totalSupply()).to.equal(302);
 		});
 
 		it("burn Function", async function () {
 			await contract.connect(addr1).burn(addr1.address, 51);
-			expect(await contract.totalSupply()).to.equal(317);
+			expect(await contract.totalSupply()).to.equal(301);
 		});
 
 		it("setURI Function", async function () {
