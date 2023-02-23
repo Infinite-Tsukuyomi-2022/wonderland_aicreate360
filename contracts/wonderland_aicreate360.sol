@@ -47,8 +47,8 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilt
     // Constructor
     // ------------------------------------------------------------------------
     constructor() 
-	EIP712("wonderland.aicreate360", "1.0.0") 
-	ERC721A("wonderland.aicreate360", "Wonderland") {
+	EIP712("wonderland_aicreate360", "1.0.0") 
+	ERC721A("wonderland_aicreate360", "Wonderland") {
     }
 
     // Modifiers
