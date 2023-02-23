@@ -1,10 +1,10 @@
 const hre = require("hardhat");
 
-var faunadb = require('faunadb');
-var q = faunadb.query;
-var adminClient = new faunadb.Client({
-	secret: process.env.REACT_APP_FAUNA_KEY
-});
+// var faunadb = require('faunadb');
+// var q = faunadb.query;
+// var adminClient = new faunadb.Client({
+// 	secret: process.env.REACT_APP_FAUNA_KEY
+// });
 
 async function main() {
 
@@ -22,19 +22,19 @@ async function main() {
 	}
 
 	// Search the last faunaDB id
-	for (let i = 0; i < 10000; i++) {
-		try {
-			result = await adminClient.query(q.Get(q.Ref(q.Collection("Whitelist"), i)))
-		  } catch (error) {
-			serial = i
-			break;
-		  }
-	}
+	// for (let i = 0; i < 10000; i++) {
+	// 	try {
+	// 		result = await adminClient.query(q.Get(q.Ref(q.Collection("Whitelist"), i)))
+	// 	  } catch (error) {
+	// 		serial = i
+	// 		break;
+	// 	  }
+	// }
 
 	// Signature
 	for (let i = 0; i < addressForClaim.length; i++) {
 		const domain = {
-			name: 'wonderland.aicreate360',
+			name: 'wonderland_aicreate360',
 			version: '1.0.0',
 			chainId: 1,
 			verifyingContract: nftAddress
@@ -61,15 +61,15 @@ async function main() {
 		console.log(signature);
 
 		// Update to faunaDB
-		var creat = await adminClient.query(q.Create(q.Ref(q.Collection('Whitelist'), serial + i), {
-			data: {
-				address: addressForClaim[i],
-				maxNum: maxQuantity,
-				signature: signature
-			}
-		}));
+		// var creat = await adminClient.query(q.Create(q.Ref(q.Collection('Whitelist'), serial + i), {
+		// 	data: {
+		// 		address: addressForClaim[i],
+		// 		maxNum: maxQuantity,
+		// 		signature: signature
+		// 	}
+		// }));
 
-		console.log(creat);	
+		// console.log(creat);	
 	}
 }
 
