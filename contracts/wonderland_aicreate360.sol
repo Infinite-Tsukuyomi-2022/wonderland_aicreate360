@@ -29,13 +29,13 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilt
     uint256 public MAX_PS_ADDRESS_TOKEN = 1;
     uint256 public airdropQuantity = 0;
     uint256 public soldQuantity = 0;
-    uint256 public whitelistSaleTimestamp = 1677142500;
-    uint256 public publicSaleTimestamp = 1677142500; //1680148800
+    uint256 public whitelistSaleTimestamp = 1677168000;
+    uint256 public publicSaleTimestamp = 1677168000; //1680148800
     bool public hasWhitelistSaleStarted = false;
     bool public hasPublicSaleStarted = false;
     bool public hasBurnStarted = false;
     string private _baseTokenURI = "https://storage.googleapis.com/wonderland/metadata/";
-    address public signer = 0x711A9ba89A8dA7c84f4805B989F67af038e023a6;
+    address public signer = 0x5279246E3626Cebe71a4c181382A50a71d2A4156;
 
     mapping(address => uint256) public hasPSMinted;
     mapping(address => uint256) public hasWLMinted;
