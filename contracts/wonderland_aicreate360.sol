@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.19;
 
 import "./ERC721A.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -24,18 +24,16 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
 
     // Sales variables
     // ------------------------------------------------------------------------
-    uint256 public MAX_NFT = 2999;
-    uint256 public WL_STAGE_LIMIT = 657; // 300 + 358, Whitelist + fans airdrop
-    uint256 public PS_STAGE_LIMIT = 2999; // 600 Public Sale
+    uint256 public MAX_NFT = 3000;
+    uint256 public PS_STAGE_LIMIT = 500;
     uint256 public MAX_PS_ADDRESS_TOKEN = 1;
-    // uint256 public PRICE = 0.0 ether;
+    uint256 public airdropQuantity = 0;
     uint256 public whitelistSaleTimestamp = 1647198840;
-    uint256 public publicSaleTimestamp = 1647198840;
+    uint256 public publicSaleTimestamp = 1647198840; //1680148800
     bool public hasWhitelistSaleStarted = false;
     bool public hasPublicSaleStarted = false;
     bool public hasBurnStarted = false;
-    string private _baseTokenURI = "http://wonderland.aicreate360.com/Metadata/";
-    address public treasury = 0x711A9ba89A8dA7c84f4805B989F67af038e023a6;
+    string private _baseTokenURI = "https://storage.googleapis.com/wonderland/metadata/";
     address public signer = 0x711A9ba89A8dA7c84f4805B989F67af038e023a6;
 
     mapping(address => uint256) public hasPSMinted;
@@ -50,7 +48,6 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
     constructor() 
 	EIP712("wonderland.aicreate360", "1.0.0") 
 	ERC721A("wonderland.aicreate360", "Wonderland") {
-        _safeMint(treasury, 50);
     }
 
     // Modifiers
@@ -84,22 +81,23 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
             SIGNATURE
         );
 
-        return signer == recoveredAddr;
+        return signer == recoveredAddr || owner() == recoveredAddr;
     }
 
     // Airdrop functions
     // ------------------------------------------------------------------------
     function airdrop(address[] calldata _to, uint256[] calldata quantity) public onlyOwner{
         uint256 count = _to.length;
-		uint256 airdropQuantity = 0;
+		uint256 numAirdrop = 0;
 
 		for (uint256 i = 0; i < count; i++) {
-			airdropQuantity += quantity[i];
+			numAirdrop += quantity[i];
 		}
 
-		require(totalSupply() + airdropQuantity <= MAX_NFT, "EXCEEDS_MAX_NFT");
+		require(totalSupply() + numAirdrop <= MAX_NFT, "EXCEEDS_MAX_NFT");
 
         for (uint256 i = 0; i < count; i++) {
+            airdropQuantity += numAirdrop;
             _safeMint(_to[i], quantity[i]);
             emit mintEvent(_to[i], quantity[i], totalSupply());
         }
@@ -107,11 +105,9 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
 
     // Whitelist functions
     // ------------------------------------------------------------------------
-    function mintWhitelist(uint256 quantity, uint256 maxQuantity, bytes memory SIGNATURE) external /*payable*/ onlyWhitelistSale {
-        require(totalSupply().add(quantity) <= WL_STAGE_LIMIT, "WL_STAGE_SOLD_OUT");
+    function mintWhitelist(uint256 quantity, uint256 maxQuantity, bytes memory SIGNATURE) external onlyWhitelistSale {
         require(verify(maxQuantity, SIGNATURE), "NOT_ELIGIBLE_FOT_WHITELIST");
         require(quantity > 0 && hasWLMinted[msg.sender].add(quantity) <= maxQuantity, "EXCEEDS_MAX_WL_QUANTITY");
-        // require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
 
         hasWLMinted[msg.sender] = hasWLMinted[msg.sender].add(quantity);
         _safeMint(msg.sender, quantity);
@@ -121,15 +117,15 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
 
     // Public Sale functions
     // ------------------------------------------------------------------------
-    function mintNFT(uint256 quantity) external /*payable*/ callerIsUser {
+    function mintNFT(uint256 quantity) external callerIsUser {
         require(hasPublicSaleStarted == true, "SALE_NOT_ACTIVE");
         require(block.timestamp >= publicSaleTimestamp, "NOT_IN_SALE_TIME");
-        // require(msg.value >= PRICE.mul(quantity), "ETHER_VALUE_NOT_ENOUGH");
-        require(totalSupply().add(quantity) <= PS_STAGE_LIMIT, "PS_STAGE_SOLD_OUT");
+        require(soldQuantity <= PS_STAGE_LIMIT, "PS_STAGE_SOLD_OUT");
         require(totalSupply().add(quantity) <= MAX_NFT, "EXCEEDS_MAX_NFT");
         require(quantity > 0 && hasPSMinted[msg.sender].add(quantity) <= MAX_PS_ADDRESS_TOKEN, "EXCEEDS_MAX_PS_QUANTITY");
 
         hasPSMinted[msg.sender] = hasPSMinted[msg.sender].add(quantity);
+        soldQuantity += quantity;
         _safeMint(msg.sender, quantity);
 
         emit mintEvent(msg.sender, quantity, totalSupply());
@@ -161,19 +157,13 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
 
     function setMAX_NFT(
         uint256 _MAX_num,
-        uint256 _WL_STAGE_LIMIT,
         uint256 _PS_STAGE_LIMIT,
         uint256 _MAX_PS_ADDRESS_TOKEN
     ) public onlyOwner {
         MAX_NFT = _MAX_num;
-        WL_STAGE_LIMIT = _WL_STAGE_LIMIT;
         PS_STAGE_LIMIT = _PS_STAGE_LIMIT;
         MAX_PS_ADDRESS_TOKEN = _MAX_PS_ADDRESS_TOKEN;
     }
-
-    // function set_PRICE(uint256 _price) public onlyOwner {
-    //     PRICE = _price;
-    // }
 
     function setSwitch(
         bool _hasWhitelistSaleStarted,
@@ -193,18 +183,6 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A {
         require(_signer != address(0), "SETTING_ZERO_ADDRESS");
         signer = _signer;
     }
-
-    // Withdrawal functions
-    // ------------------------------------------------------------------------
-    function setTreasury(address _treasury) public onlyOwner {
-        require(treasury != address(0), "SETTING_ZERO_ADDRESS");
-        treasury = _treasury;
-    }
-
-    // function withdrawAll() public payable onlyOwner {
-    //     require(payable(treasury).send(address(this).balance));
-    // }
-
 
 	// Opensea royalties functions
 	// ------------------------------------------------------------------------
