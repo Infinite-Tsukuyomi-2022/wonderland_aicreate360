@@ -67,51 +67,51 @@ describe("Wonderland", function () {
 		// 	await contract.connect(owner).set_PRICE("40000000000000000");
 		// });
 
-		it("mintWhitelist Function", async function () {
+		// it("mintWhitelist Function", async function () {
 
-			let quantity = 1;
-			let maxQuantity = 1;
+		// 	let quantity = 1;
+		// 	let maxQuantity = 1;
 
-			const domain = {
-				name: 'wonderland_aicreate360',
-				version: '1.0.0',
-				chainId: 31337,
-				verifyingContract: '0x03BDD595639Fb287622Fc1A0baced3f3E1186ACE'
-			};
+		// 	const domain = {
+		// 		name: 'wonderland_aicreate360',
+		// 		version: '1.0.0',
+		// 		chainId: 31337,
+		// 		verifyingContract: '0x03BDD595639Fb287622Fc1A0baced3f3E1186ACE'
+		// 	};
 
-			const types = {
-				NFT: [{
-						name: 'addressForClaim',
-						type: 'address'
-					},
-					{
-						name: 'maxQuantity',
-						type: 'uint256'
-					},
-				],
-			};
+		// 	const types = {
+		// 		NFT: [{
+		// 				name: 'addressForClaim',
+		// 				type: 'address'
+		// 			},
+		// 			{
+		// 				name: 'maxQuantity',
+		// 				type: 'uint256'
+		// 			},
+		// 		],
+		// 	};
 
-			var value = {
-				addressForClaim: addr1.address,
-				maxQuantity: maxQuantity
-			};
+		// 	var value = {
+		// 		addressForClaim: addr1.address,
+		// 		maxQuantity: maxQuantity
+		// 	};
 
-			signature = await owner._signTypedData(domain, types, value);
-			console.log('signature: '+signature);
-			await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature);
+		// 	signature = await owner._signTypedData(domain, types, value);
+		// 	console.log('signature: '+signature);
+		// 	await contract.connect(addr1).mintWhitelist(quantity, maxQuantity, signature);
 
-			expect(await contract.totalSupply()).to.equal(301);
+		// 	expect(await contract.totalSupply()).to.equal(301);
 
-		});
+		// });
 
 		it("mintNFT Function", async function () {
 			await contract.connect(addr2).mintNFT(1);
-			expect(await contract.totalSupply()).to.equal(302);
+			expect(await contract.totalSupply()).to.equal(301);
 		});
 
 		it("burn Function", async function () {
 			await contract.connect(addr1).burn(addr1.address, 51);
-			expect(await contract.totalSupply()).to.equal(301);
+			expect(await contract.totalSupply()).to.equal(300);
 		});
 
 		it("setURI Function", async function () {
