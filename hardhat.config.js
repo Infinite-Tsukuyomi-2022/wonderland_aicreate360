@@ -49,7 +49,7 @@ module.exports = {
     polygon: {
       url: process.env.ALCHEMY_API_MAINNET_KEY, 
       accounts:[process.env.MAINNET_PRIVATE_KEY],
-      gas: 3009400,
+      gas: 2747558,
       gasPrice: 120000000000
     }
   },  
