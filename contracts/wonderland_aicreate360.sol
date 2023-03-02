@@ -25,12 +25,11 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilt
     // Sales variables
     // ------------------------------------------------------------------------
     uint256 public MAX_NFT = 3000;
-    uint256 public PS_STAGE_LIMIT = 500;
     uint256 public MAX_PS_ADDRESS_TOKEN = 1;
     uint256 public airdropQuantity = 0;
     uint256 public soldQuantity = 0;
-    uint256 public whitelistSaleTimestamp = 1677168000;
-    uint256 public publicSaleTimestamp = 1677168000; //1680148800
+    uint256 public whitelistSaleTimestamp = 1680148800; // NO WHITELIST!
+    uint256 public publicSaleTimestamp = 1680148800; // 3/30 12:00 -> 1680148800
     bool public hasWhitelistSaleStarted = false;
     bool public hasPublicSaleStarted = false;
     bool public hasBurnStarted = false;
@@ -121,7 +120,6 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilt
     function mintNFT(uint256 quantity) external callerIsUser {
         require(hasPublicSaleStarted == true, "SALE_NOT_ACTIVE");
         require(block.timestamp >= publicSaleTimestamp, "NOT_IN_SALE_TIME");
-        require(soldQuantity <= PS_STAGE_LIMIT, "PS_STAGE_SOLD_OUT");
         require(totalSupply().add(quantity) <= MAX_NFT, "EXCEEDS_MAX_NFT");
         require(quantity > 0 && hasPSMinted[msg.sender].add(quantity) <= MAX_PS_ADDRESS_TOKEN, "EXCEEDS_MAX_PS_QUANTITY");
 
@@ -158,11 +156,9 @@ contract wonderland_aicreate360 is Ownable, EIP712, ERC721A, DefaultOperatorFilt
 
     function setMAX_NFT(
         uint256 _MAX_num,
-        uint256 _PS_STAGE_LIMIT,
         uint256 _MAX_PS_ADDRESS_TOKEN
     ) public onlyOwner {
         MAX_NFT = _MAX_num;
-        PS_STAGE_LIMIT = _PS_STAGE_LIMIT;
         MAX_PS_ADDRESS_TOKEN = _MAX_PS_ADDRESS_TOKEN;
     }
 
